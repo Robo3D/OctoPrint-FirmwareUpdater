@@ -190,7 +190,7 @@ $(function() {
             self.isBusy(true);
             self.showAlert(false);
             self.progressBarText("Flashing firmware...");
-
+            console.log(AJAX_BASEURL + "system");
             $.ajax({
                 url: PLUGIN_BASEURL + "firmwareupdater/flashUpdate",
                 type: "POST",
