@@ -487,8 +487,8 @@ def __plugin_load__():
             __plugin_implementation__.increase_upload_bodysize
     }
 
-    global __plugin_helpers__
+    # global __plugin_helpers__
 
-    __plugin_helpers__ = dict(
-        firmware_updating = __plugin_implementation__._is_updating
-    )
+    # __plugin_helpers__ = dict(
+    #     firmware_updating = __plugin_implementation__._is_updating
+    # )
