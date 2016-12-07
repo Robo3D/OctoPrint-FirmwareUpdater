@@ -376,7 +376,7 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
     def bodysize_hook(self, current_max_body_sizes, *args, **kwargs):
         return [("POST", r"/flashFirmwareWithPath", 1000 * 1024)]
 	
-	def get_update_information(self):
+    def get_update_information(self):
         return dict(
             robotheme=dict(
                 type="github_release",
