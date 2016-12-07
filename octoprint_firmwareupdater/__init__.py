@@ -375,6 +375,18 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
 
     def bodysize_hook(self, current_max_body_sizes, *args, **kwargs):
         return [("POST", r"/flashFirmwareWithPath", 1000 * 1024)]
+	
+	def get_update_information(self):
+        return dict(
+            robotheme=dict(
+                type="github_release",
+                user="Robo3D",
+                repo="OctoPrint-FirmwareUpdater",
+                branch='master',
+                pip="https://github.com/Robo3D/OctoPrint-FirmwareUpdater/archive/{target_version}.zip"
+            )
+        )
+
 
 
 class AvrdudeException(Exception):
@@ -390,6 +402,7 @@ def __plugin_load__():
     __plugin_implementation__ = FirmwareupdaterPlugin()
 
     __plugin_hooks__ = {
-        "octoprint.server.http.bodysize": __plugin_implementation__.bodysize_hook
+        "octoprint.server.http.bodysize": __plugin_implementation__.bodysize_hook,
+		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
     }
     __plugin_helpers__ = dict(firmware_updating = __plugin_implementation__._is_updating)
