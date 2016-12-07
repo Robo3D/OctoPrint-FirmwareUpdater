@@ -378,7 +378,7 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
 	
     def get_update_information(self):
         return dict(
-            robotheme=dict(
+            firmwareupdater=dict(
                 type="github_release",
                 user="Robo3D",
                 repo="OctoPrint-FirmwareUpdater",
