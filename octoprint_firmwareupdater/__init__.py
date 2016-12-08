@@ -371,18 +371,22 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
     def _is_updating(self):
         pass
         return self.isUpdating
-    #~~ Hooks
 
+    #~~ Hooks
     def bodysize_hook(self, current_max_body_sizes, *args, **kwargs):
         return [("POST", r"/flashFirmwareWithPath", 1000 * 1024)]
-	
+    
     def get_update_information(self):
         return dict(
-            firmwareupdater=dict(
+            firmware_updater=dict(
+                displayName = "Firmware Updater",
+                displayVersion = self._plugin_version,
+
                 type="github_release",
                 user="Robo3D",
                 repo="OctoPrint-FirmwareUpdater",
-                branch='master',
+                branch="master",
+                
                 pip="https://github.com/Robo3D/OctoPrint-FirmwareUpdater/archive/{target_version}.zip"
             )
         )
