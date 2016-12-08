@@ -403,6 +403,6 @@ def __plugin_load__():
 
     __plugin_hooks__ = {
         "octoprint.server.http.bodysize": __plugin_implementation__.bodysize_hook,
-		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
+        "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
     }
     __plugin_helpers__ = dict(firmware_updating = __plugin_implementation__._is_updating)
