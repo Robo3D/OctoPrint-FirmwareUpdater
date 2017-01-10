@@ -33,7 +33,6 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
         self.isUpdating = False
 
     #~~ BluePrint API
-    
 
 
     @octoprint.plugin.BlueprintPlugin.route("/flashFirmwareWithPath", methods=["POST"])
@@ -169,6 +168,59 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
         self.isUpdating = True
 
         return True
+
+    def flash_from_USB(self,hex_file_path):
+        # Create thread to flash firmware
+        import threading
+        flash_thread = threading.Thread(target=self._flash_worker_from_path, args=(hex_file_path, "/dev/ttyACM0"))
+        flash_thread.daemon = False
+        flash_thread.start()
+        self.isUpdating = True
+
+    def _flash_worker_from_path(self, hex_path, selected_port):
+        if self._printer.is_operational():
+            self._printer.disconnect()
+
+        avrdude_path = self._settings.get(["avrdude_path"])
+        working_dir = os.path.dirname(avrdude_path)
+        avrdude_command = [avrdude_path, "-v", "-p", "m2560", "-c", "wiring", "-P", selected_port, "-U", "flash:w:" + hex_path + ":i", "-D"]
+
+        import sarge
+        self._logger.info(u"Running %r in %s" % (' '.join(avrdude_command), working_dir))
+        try:
+            p = sarge.run(avrdude_command, cwd=working_dir, async=True, stdout=sarge.Capture(), stderr=sarge.Capture())
+            p.wait_events()
+
+            while p.returncode is None:
+                line = p.stderr.read(timeout=0.5)
+                if not line:
+                    p.commands[0].poll()
+                    continue
+                if "avrdude: writing" in line:
+                    self._logger.info(u"Writing memory...")
+                elif "avrdude: verifying ..." in line:
+                    self._logger.info(u"Verifying memory...")
+                elif "timeout communicating with programmer" in line:
+                    e_msg = "Timeout communicating with programmer"
+                    raise AvrdudeException
+                elif "avrdude: ERROR:" in line:
+                    e_msg = "AVRDUDE error: " + line[line.find("avrdude: ERROR:")+len("avrdude: ERROR:"):].strip()
+                    raise AvrdudeException
+
+            if p.returncode == 0:
+                self._logger.info(u"Flashing successful.")
+            else:
+                e_msg = "Avrdude returned code {returncode}".format(returncode=p.returncode)
+                raise AvrdudeException
+
+        except AvrdudeException:
+            self._logger.error(u"Flashing failed. {error}.".format(error=e_msg))
+        except:
+            self._logger.exception(u"Flashing failed. Unexpected error.")
+        finally:
+            self.isUpdating = False
+
+
 
     def _flash_worker(self, hex_file, selected_port):
 
@@ -409,4 +461,4 @@ def __plugin_load__():
         "octoprint.server.http.bodysize": __plugin_implementation__.bodysize_hook,
         "octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
     }
-    __plugin_helpers__ = dict(firmware_updating = __plugin_implementation__._is_updating)
+    __plugin_helpers__ = dict(firmware_updating = __plugin_implementation__._is_updating,flash_usb = __plugin_implementation__.flash_from_USB)
