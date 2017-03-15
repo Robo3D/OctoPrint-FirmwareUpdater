@@ -176,13 +176,13 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
         flash_thread.daemon = False
         flash_thread.start()
         self.isUpdating = True
-	
-	def reset_eeprom(self):
+
+    def reset_eeprom(self):
 		self._printer.commands(['M502','M500'])
 
     def _flash_worker_from_path(self, hex_path, selected_port):
-		self.reset_eeprom()
-		
+        self.reset_eeprom()
+        
         if self._printer.is_operational():
             self._printer.disconnect()
 
@@ -348,7 +348,7 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
             self._logger.error(u"Unable to get printer's data")
             self._checking = False
             return
-            
+
         if not ("MACHINE_TYPE" in data and "FIRMWARE_VERSION" in data):
             return
 
@@ -432,7 +432,7 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
     #~~ Hooks
     def bodysize_hook(self, current_max_body_sizes, *args, **kwargs):
         return [("POST", r"/flashFirmwareWithPath", 1000 * 1024)]
-    
+
     def get_update_information(self):
         return dict(
             firmware_updater=dict(
@@ -443,7 +443,7 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
                 user="Robo3D",
                 repo="OctoPrint-FirmwareUpdater",
                 branch="master",
-                
+
                 pip="https://github.com/Robo3D/OctoPrint-FirmwareUpdater/archive/{target_version}.zip"
             )
         )
