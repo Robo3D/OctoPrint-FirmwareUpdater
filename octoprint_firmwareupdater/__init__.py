@@ -176,8 +176,13 @@ class FirmwareupdaterPlugin(octoprint.plugin.BlueprintPlugin,
         flash_thread.daemon = False
         flash_thread.start()
         self.isUpdating = True
+	
+	def reset_eeprom(self):
+		self._printer.commands(['M502','M500'])
 
     def _flash_worker_from_path(self, hex_path, selected_port):
+		self.reset_eeprom()
+		
         if self._printer.is_operational():
             self._printer.disconnect()
 
