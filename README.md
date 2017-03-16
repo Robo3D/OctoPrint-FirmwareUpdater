@@ -1,6 +1,6 @@
-# OctoPrint Firmware Updater
+# Robo Flavored OctoPrint Firmware Updater
 
-This plugin can be used to flash the firmware of your printer by selecting a file or an URL.
+This plugin can be used to flash the firmware of your printer by selecting a file or an URL.  After flashing your Mainboard (ATMEGA256o based), it is recommended you reset your EEPROM using `M502` to restore defaults and save with an `M500`.  
 
 It can also check automatically for new firmwares by getting the printer's current firmware version and checking online
 for the latest one.
@@ -13,12 +13,14 @@ information about the latests firmware available and the URL to download it, whi
 
 The update check can be done automatically after connecting to the printer or manually from the plugin's dialog.
 
-## Setup
+## Installing on Robo C2 and R2
 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
 or manually using this URL:
 
-    https://github.com/OctoPrint/OctoPrint-FirmwareUpdater/archive/master.zip
+    https://github.com/Robo3D/OctoPrint-FirmwareUpdater/archive/master.zip
+
+## For all other Raspbian distributions you may need the following dependencies
 
 ### AVRDUDE setup
 
